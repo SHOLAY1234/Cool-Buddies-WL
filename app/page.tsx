@@ -10,7 +10,7 @@ const Home = () => {
   const [isVerifying, setIsVerifying] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
-  const getEligibility = useCallback(async (address) => {
+  const getEligibility = useCallback(async (address: string) => {
     const jsonRes = await fetch('api/get-whitelist?address=' + address, {
       method: 'GET',
       cache: 'no-store',
@@ -29,7 +29,7 @@ const Home = () => {
 
   return (
     <>
- <style jsx global>{`
+      <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Wendy+One&display=swap');
 
         .background-container {
@@ -179,7 +179,6 @@ const Home = () => {
         }
         
       `}</style>
-
 
       <main className="relative max-w-6xl">
         <div className="background-container"></div>
