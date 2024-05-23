@@ -1,22 +1,16 @@
 'use client'
 import Image from "next/image"
 import Link from "next/link"
-
-import { useState, useEffect, useCallback } from "react";
-
-import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer, toast } from 'react-toastify';
-
+import { useState, useCallback } from "react"
+import 'react-toastify/dist/ReactToastify.css'
+import { ToastContainer, toast } from 'react-toastify'
 
 const Home = () => {
-
-
   const [wallet, setWallet] = useState('')
   const [isVerifying, setIsVerifying] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
-
-  const getEligibility = useCallback(async (address: string) => {
-
+  const getEligibility = useCallback(async (address) => {
     const jsonRes = await fetch('api/get-whitelist?address=' + address, {
       method: 'GET',
       cache: 'no-store',
@@ -25,99 +19,235 @@ const Home = () => {
       }
     })
 
-    const res = await jsonRes.json();
-
+    const res = await jsonRes.json()
     return res ?? false
   }, [])
 
-
+  const toggleMenu = () => {
+    setMenuOpen(prev => !prev)
+  }
 
   return (
-    <main className="relative  max-w-6xl h-screen mx-auto flex flex-col items-center justify-center">
-      <div className=" w-full flex flex-col items-center justify-center gap-7 p-6 sm:p-16">
-        <div className="text-black text-4xl md:text-6xl lg:text-8xl font-semibold" >
-          Cool List
+    <>
+ <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Wendy+One&display=swap');
+
+        .background-container {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: -1;
+          background-image: url('/BGwl.png');
+          background-size: cover;
+          background-position: center;
+          filter: brightness(45%);
+        }
+
+        body {
+          margin: 0;
+          padding: 0;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          position: relative;
+        }
+
+        .wendy-one {
+          font-family: 'Wendy One';
+        }
+
+        .toast-message {
+          background: #A87612 !important;
+          color: #fff !important;
+          font-family: 'Wendy One' !important;
+          font-size: large !important;
+        }
+
+        .toast-progress {
+          background: #D03714 !important;
+        }
+
+        .container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 20px;
+          position: relative;
+        }
+
+        @media (max-width: 640px) {
+          .container {
+            gap: 10px;
+          }
+        }
+
+        .title-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 20px;
+          position: relative;
+          text-align: center;
+        }
+
+        .eligibility-text {
+          margin-left: 10px;
+        }
+
+        .menu-container {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          z-index: 1001;
+        }
+
+        .menu-button {
+          background: transparent;
+          border: none;
+          cursor: pointer;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          height: 24px;
+          width: 30px;
+        }
+
+        .menu-button span {
+          background: #D03714;
+          height: 3px;
+          width: 100%;
+          transition: all 0.3s;
+        }
+
+        .menu-button.open span:nth-child(1) {
+          transform: translateY(10px) rotate(45deg);
+        }
+
+        .menu-button.open span:nth-child(2) {
+          opacity: 0;
+        }
+
+        .menu-button.open span:nth-child(3) {
+          transform: translateY(-10px) rotate(-45deg);
+        }
+
+        .menu {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          position: fixed;
+          top: 60px;
+          right: 20px;
+          background: rgba(0, 0, 0, 0.9);
+          width: 200px;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+          z-index: 1000;
+          opacity: ${menuOpen ? '1' : '0'};
+          transform: ${menuOpen ? 'translateX(0)' : 'translateX(100%)'};
+          transition: all 0.3s;
+        }
+
+        .menu a {
+          color: #fff;
+          padding: 10px 20px;
+          text-decoration: none;
+          width: 100%;
+          text-align: center;
+          transition: background 0.3s;
+          font-family: 'Wendy One';
+        }
+
+        .menu a:hover {
+          background: #A87612;
+        }
+
+        .logo-container {
+          position: fixed;
+          top: 20px;
+          left: 40px; /* Adjusted left position */
+          z-index: 1001;
+          border-radius: 20%;
+          overflow: hidden;
+        }
+        
+      `}</style>
+
+
+      <main className="relative max-w-6xl">
+        <div className="background-container"></div>
+        <div className="logo-container">
+          <Image src="/logo.jpg" alt="Logo" width={50} height={50} />
         </div>
-
-        <label htmlFor="wallet-input" className="text-black text-opacity-50  text-lg sm:text-xl md:text-3xl">Check your WL eligibility</label>
-
-        <input
-          className="p-2 rounded-lg transition-all shadow-2xl "
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setWallet((e.target.value).substring(0, 200) as string)
-          }} value={wallet} name="wallet-input" type="text" placeholder="wallet address..." />
-
-
-        {!isVerifying ? (
-          <button onClick={() => {
-            if(isVerifying){return}
-            
-            if ((wallet === '') ) {
-              toast('Enter your Wallet Address', { type: "warning", className: 'toast-message', progressClassName:'toast-progress' })
-              return
-            }
-            setIsVerifying(true);
-            getEligibility(wallet).then((res) => {
-              setIsVerifying(false);
-              if (res) {
-                toast('Wallet Whitelisted!', { type: "success", className: 'toast-message', progressClassName:'toast-progress' })
-              } else {
-                toast('Wallet not Found!', { type: "error", className: 'toast-message', progressClassName:'toast-progress' })
+        <div className="menu-container">
+          <button className={`menu-button ${menuOpen ? 'open' : ''}`} onClick={toggleMenu}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <div className={`menu ${menuOpen ? 'open' : ''}`} >
+            <Link href="https://pitch.com/v/copy-of-residium-pitch-deck-p6c3tb" onClick={toggleMenu} target="_blank" >Pitch Deck</Link>
+            <Link href="https://x.com/ResidiumFinance" onClick={toggleMenu} target="_blank" >Twitter</Link>
+            <Link href="https://discord.com/invite/CWwaC2Gpsu" onClick={toggleMenu} target="_blank" >Discord</Link>
+          </div>
+        </div>
+        <div className="container">
+          <div className="title-container">
+            <div className="wendy-one text-white text-4xl md:text-6xl lg:text-8xl font-semibold" style={{ color: '#D03714', fontSize: '4.3rem', textShadow: '2px 2px 4px rgba(0,0,0,0.5)', letterSpacing: '-0.05em', fontWeight: '500' }}>
+              Resd List
+            </div>
+            <div className="wendy-one text-white text-4xl md:text-6xl lg:text-8xl font-semibold eligibility-text" style={{ color: '#A87612', fontSize: '1.5rem', textShadow: '2px 2px 4px rgba(0,0,0,0.2)', letterSpacing: '-0.05em', fontWeight: '300' }}>
+              Check your OG / WL eligibility
+            </div>
+          </div>
+          <input
+            className="p-3 rounded-xl transition-all shadow-2xl wendy-one"
+            onChange={(e) => setWallet(e.target.value.substring(0, 200))}
+            value={wallet}
+            name="wallet-input"
+            type="text"
+            placeholder="Enter Address!"
+          />
+          {!isVerifying ? (
+            <button onClick={() => {
+              if (isVerifying) { return }
+              if (wallet === '') {
+                toast('Enter your Wallet Address', { type: "warning", className: 'toast-message', progressClassName: 'toast-progress' })
+                return
               }
-            })
-
-          }}
-            className=" px-2 py-1 rounded-2xl shadow-xl bg-slate-500 text-xl md:text-3xl bg-opacity-60 transition-all hover:scale-[1.08] duration-[400ms] active:scale-100 hover:text-white hover:bg-opacity-100  "> Verify</button>
-        ) : (
-          <Image priority={true} loading="eager" width={60} height={60} src={'/loader.png'} alt="loader" className="aspect-auto animate-spin" />
-        )}
-
-      </div>
-
-      <Image priority={true} loading="eager" className={"z-[-2] absolute bottom-0 left-[50%] translate-x-[-50%] transition-all " }
-      style={{
-        opacity:isVerifying?('0.37'):('1')
-      }}
-      alt="coolbuddy" width={350} height={350} src={'/Cool Buddy.webp'}></Image>
-
-
-      <div className="transition-opacity duration-300 max-sm:w-fit max-sm:left-[50%] max-sm:translate-x-[-50%] w-full fixed z-10 bottom-12 left-[10vw] flex items-center justify-start gap-4">
-
-        <Link className=" max-sm:hidden" href={'http://www.wabalabaland.com/'} target="_blank">
-          <Image className="aspect-auto w-[40px] h-[40px]  sm:ml-4 rounded-full transition-all hover:scale-[1.08] active:scale-100"
-            alt="logo"
-            src={'/logo.webp'}
-            width={60}
-            height={60}
-          ></Image>
-        </Link>
-
-        <Link className=" max-sm:hidden" href={'https://twitter.com/wabalabaland'} target="_blank">
-          <Image className="aspect-auto w-[40px] h-[40px]  sm:ml-4 transition-all hover:scale-[1.08] active:scale-100"
-            alt="logo"
-            src={'/twitter.png'}
-            width={60}
-            height={60}
-          ></Image>
-        </Link>
-
-        <Link className=" max-sm:hidden" href={'https://discord.gg/QUDJ9MGEkn'} target="_blank">
-          <Image className="aspect-auto w-[40px] h-[40px]  sm:ml-4 transition-all hover:scale-[1.08] active:scale-100"
-            alt="logo"
-            src={'/discord.png'}
-            width={60}
-            height={60}
-          ></Image>
-        </Link>
-      </div>
-
-
-      <ToastContainer
-        style={{ zIndex: '1000000001', position: 'fixed' }}
-        pauseOnHover
-        position='bottom-center'
-        limit={2} />
-    </main>
+              setIsVerifying(true)
+              getEligibility(wallet).then((res) => {
+                setIsVerifying(false)
+                if (res) {
+                  toast('Wallet Whitelisted!', { type: "success", className: 'toast-message', progressClassName: 'toast-progress' })
+                } else {
+                  toast('Wallet not Found!', { type: "error", className: 'toast-message', progressClassName: 'toast-progress' })
+                }
+              })
+            }}
+              className="wendy-one px-2 py-1 rounded-2xl shadow-xl bg-slate-500 text-xl md:text-3xl bg-opacity-60 transition-all hover:scale-[1.08] duration-[400ms] active:scale-100 hover:text-white hover:bg-opacity-100"
+            >
+              Verify
+            </button>
+          ) : (
+            <Image priority={true} loading="eager" width={50} height={50} src={'/loader.png'} alt="loader" className="aspect-auto animate-spin" />
+          )}
+        </div>
+        <ToastContainer
+          style={{ zIndex: '1000000001', position: 'fixed' }}
+          pauseOnHover
+          position='bottom-center'
+          limit={2}
+        />
+      </main>
+    </>
   )
 }
 

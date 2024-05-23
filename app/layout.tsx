@@ -9,35 +9,31 @@ const baseUrl = process.env.NODE_ENV === 'development'
   'https://' + process.env.VERCEL_URL as string;
 
 export const metadata: Metadata = {
-  title: 'Wallet Checker',
-  description: 'Cool Buddies Wallet Checker',
+  title: 'Residium Finance | OG & WL Checker',
+  description: 'OG & WL Address Checker',
   viewport: { width: "device-width", initialScale: 1 },
   metadataBase: new URL(baseUrl),
-  keywords: "NFT, SOL, Cool Buddies, art, mint, free, demarco",
-  creator: 'iSy',
-  publisher: 'iSy',
+  keywords: "NFT, SOL, Residium Finance, art, mint, free",
+  creator: 'Dayal',
+  publisher: 'Residium Finance',
   generator: 'Next.js',
-  applicationName: 'Cool Buddies',
+  applicationName: 'Residium Finance',
   authors: [
     {
-      name: 'iSy',
-      url: 'https://linktr.ee/isyqozz512'
-    },
-    {
-      name: 'Demarco',
-      url: 'https://twitter.com/itsnot_demarco'
+      name: 'Residium Finance',
+      url: 'https://x.com/ResidiumFinance'
     }
   ],
   openGraph: {
-    title: 'Wallet Checker',
-    description: 'Cool Buddies Wallet Checker.',
-    siteName: 'Cool Buddies',
+    title: 'OG & WL Wallet Address Checker',
+    description: 'Residium Finance | OG & WL Checker',
+    siteName: 'Residium Finance',
   },
   twitter: {
-    title: 'Wallet Checker',
-    description: 'Cool Buddies Wallet Checker.',
+    title: 'OG & WL Wallet Address Checker',
+    description: 'Residium Finance | OG & WL Checker',
     card: 'summary',
-    creator: '@iSyqozz512',
+    creator: '@ResidiumFinance',
   },
 
 }
@@ -50,7 +46,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className + ' [background:_#d9e9f3]'}>{children}</body>
+      <body className={inter.className}>{children}</body>
     </html>
   )
 }
