@@ -172,7 +172,7 @@ const Home = () => {
         .logo-container {
           position: fixed;
           top: 20px;
-          left: 40px; /* Adjusted left position */
+          left: 30px; /* Adjusted left position */
           z-index: 1001;
           border-radius: 20%;
           overflow: hidden;
